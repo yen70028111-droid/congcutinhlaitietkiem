@@ -12,7 +12,7 @@ st.set_page_config(
 # =========================
 # TIÊU ĐỀ
 # =========================
-st.title("💰 APP TÍNH LÃI GỬI TIẾT KIỆM")
+st.title("💰 APP TÍNH LÃI GỬI TIẾT KIỆM tại NY bank")
 st.write("Tính tiền lãi theo phương pháp **lãi đơn** hoặc **lãi kép**.")
 
 st.divider()
