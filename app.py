@@ -12,7 +12,7 @@ st.set_page_config(
 # =========================
 # TIÊU ĐỀ
 # =========================
-st.title("💰 APP TÍNH LÃI GỬI TIẾT KIỆM Phahm Thị Vũ Ngọc Yến")
+st.title("💰 APP TÍNH LÃI GỬI TIẾT KIỆM Phạm Thị Vũ Ngọc Yến")
 st.write("Tính tiền lãi theo phương pháp **lãi đơn** hoặc **lãi kép**.")
 
 st.divider()
