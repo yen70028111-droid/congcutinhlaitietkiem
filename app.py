@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 
 # =========================================================
 # 1. CẤU HÌNH TRANG
@@ -32,15 +31,6 @@ st.markdown("""
         font-size: 18px;
         margin-bottom: 20px;
     }
-
-    .result-title {
-        font-size: 24px;
-        font-weight: bold;
-    }
-
-    [data-testid="stMetricValue"] {
-        font-size: 24px;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -48,7 +38,10 @@ st.markdown("""
 # 3. LOGO
 # =========================================================
 
-st.image("logo.jpg", width=200)
+try:
+    st.image("logo.jpg", width=200)
+except:
+    st.warning("⚠️ Không tìm thấy file logo.jpg")
 
 # =========================================================
 # 4. TIÊU ĐỀ
@@ -68,6 +61,7 @@ st.markdown(
 
 st.divider()
 
+
 # =========================================================
 # 5. HÀM ĐỊNH DẠNG TIỀN
 # =========================================================
@@ -77,7 +71,7 @@ def format_money(value):
 
 
 # =========================================================
-# 6. NHẬP THÔNG TIN Ở SIDEBAR
+# 6. SIDEBAR - NHẬP THÔNG TIN
 # =========================================================
 
 st.sidebar.title("📋 THÔNG TIN KHOẢN GỬI")
@@ -126,15 +120,21 @@ hinh_thuc = st.sidebar.selectbox(
 st.sidebar.divider()
 
 st.sidebar.info(
-    "💡 Bạn có thể thay đổi các thông tin bên trên "
-    "để xem kết quả và biểu đồ được cập nhật tự động."
+    "💡 Thay đổi thông tin bên trên để xem kết quả "
+    "và biểu đồ được cập nhật tự động."
 )
 
+
 # =========================================================
-# 7. XÁC ĐỊNH SỐ KỲ TRONG NĂM
+# 7. CHUYỂN LÃI SUẤT
 # =========================================================
 
 lai_suat_nam = lai_suat / 100
+
+
+# =========================================================
+# 8. XÁC ĐỊNH SỐ KỲ TRONG NĂM
+# =========================================================
 
 if hinh_thuc == "Lãnh lãi hàng tháng":
     so_ky_nam = 12
@@ -147,7 +147,7 @@ else:
 
 
 # =========================================================
-# 8. TÍNH LÃI
+# 9. TÍNH KẾT QUẢ
 # =========================================================
 
 if loai_lai == "Lãi đơn":
@@ -158,48 +158,40 @@ if loai_lai == "Lãi đơn":
     # Tổng gốc + lãi
     tong_tien = tien_gui + tong_lai
 
-    # Tiền lãi định kỳ
+    # Lãi định kỳ
     if hinh_thuc == "Lãnh lãi hàng tháng":
-
         lai_dinh_ky = tien_gui * lai_suat_nam / 12
 
     elif hinh_thuc == "Lãnh lãi hàng quý":
-
         lai_dinh_ky = tien_gui * lai_suat_nam / 4
 
     else:
-
         lai_dinh_ky = tong_lai
 
 
 else:
 
-    # Lãi suất theo kỳ
+    # Lãi suất mỗi kỳ
     lai_suat_ky = lai_suat_nam / so_ky_nam
 
     # Số kỳ
     so_ky = ky_han / (12 / so_ky_nam)
 
     # Tổng tiền cuối kỳ
-    tong_tien = tien_gui * (
-        (1 + lai_suat_ky) ** so_ky
-    )
+    tong_tien = tien_gui * ((1 + lai_suat_ky) ** so_ky)
 
     # Tổng tiền lãi
     tong_lai = tong_tien - tien_gui
 
     # Lãi định kỳ
     if hinh_thuc == "Lãnh lãi cuối kỳ":
-
         lai_dinh_ky = tong_lai
-
     else:
-
         lai_dinh_ky = tien_gui * lai_suat_ky
 
 
 # =========================================================
-# 9. HIỂN THỊ KẾT QUẢ
+# 10. KẾT QUẢ
 # =========================================================
 
 st.subheader("📊 KẾT QUẢ TÍNH TOÁN")
@@ -232,8 +224,9 @@ with col4:
 
 st.divider()
 
+
 # =========================================================
-# 10. THÔNG TIN KHOẢN GỬI
+# 11. THÔNG TIN KHOẢN GỬI
 # =========================================================
 
 st.subheader("📋 Thông tin khoản gửi")
@@ -249,10 +242,12 @@ with col2:
     st.write(f"**Phương pháp:** {loai_lai}")
     st.write(f"**Hình thức nhận lãi:** {hinh_thuc}")
 
+
 st.divider()
 
+
 # =========================================================
-# 11. TẠO DỮ LIỆU BIỂU ĐỒ TĂNG TRƯỞNG
+# 12. TẠO DỮ LIỆU BIỂU ĐỒ
 # =========================================================
 
 data = []
@@ -275,14 +270,14 @@ for thang in range(0, ky_han + 1):
 
     else:
 
-        # Lãnh lãi hàng tháng
+        # Lãi kép hàng tháng
         if hinh_thuc == "Lãnh lãi hàng tháng":
 
             tien_tich_luy = tien_gui * (
                 1 + lai_suat_nam / 12
             ) ** thang
 
-        # Lãnh lãi hàng quý
+        # Lãi kép hàng quý
         elif hinh_thuc == "Lãnh lãi hàng quý":
 
             so_quy = thang // 3
@@ -291,7 +286,7 @@ for thang in range(0, ky_han + 1):
                 1 + lai_suat_nam / 4
             ) ** so_quy
 
-        # Lãnh lãi cuối kỳ
+        # Lãi kép cuối kỳ
         else:
 
             tien_tich_luy = tien_gui * (
@@ -306,72 +301,52 @@ for thang in range(0, ky_han + 1):
         "Tiền lãi": tien_lai
     })
 
+
 df = pd.DataFrame(data)
 
+
 # =========================================================
-# 12. BIỂU ĐỒ TĂNG TRƯỞNG
+# 13. BIỂU ĐỒ TĂNG TRƯỞNG
 # =========================================================
 
 st.subheader("📈 Biểu đồ tăng trưởng tiền gửi")
 
 st.write(
-    f"Biểu đồ thể hiện sự thay đổi của khoản tiền "
-    f"trong {ky_han} tháng theo phương pháp **{loai_lai}**."
+    f"Phương pháp: **{loai_lai}** | "
+    f"Kỳ hạn: **{ky_han} tháng** | "
+    f"Lãi suất: **{lai_suat:.2f}%/năm**"
 )
 
-fig = px.line(
-    df,
-    x="Tháng",
-    y="Tổng tiền",
-    markers=True,
-    title=f"Tăng trưởng tiền gửi - {loai_lai}"
-)
+# Chỉ lấy dữ liệu cần thiết cho biểu đồ
+chart_data = df.set_index("Tháng")[["Tổng tiền"]]
 
-fig.update_layout(
-    xaxis_title="Thời gian (tháng)",
-    yaxis_title="Tổng số tiền (VNĐ)",
-    hovermode="x unified"
-)
-
-fig.update_yaxes(
-    tickformat=",.0f"
-)
-
-st.plotly_chart(
-    fig,
+st.line_chart(
+    chart_data,
     use_container_width=True
 )
 
+st.caption(
+    "📌 Biểu đồ thể hiện sự thay đổi của tổng số tiền "
+    "theo từng tháng."
+)
+
+
 # =========================================================
-# 13. BIỂU ĐỒ TIỀN GỐC VÀ TIỀN LÃI
+# 14. BIỂU ĐỒ TIỀN LÃI
 # =========================================================
 
-st.subheader("💵 Tăng trưởng tiền gốc và tiền lãi")
+st.subheader("💸 Biểu đồ tiền lãi tích lũy")
 
-fig2 = px.area(
-    df,
-    x="Tháng",
-    y=["Tổng tiền", "Tiền lãi"],
-    title="So sánh tổng tiền và tiền lãi theo thời gian"
-)
+interest_chart = df.set_index("Tháng")[["Tiền lãi"]]
 
-fig2.update_layout(
-    xaxis_title="Thời gian (tháng)",
-    yaxis_title="Số tiền (VNĐ)",
-    hovermode="x unified"
-)
-
-fig2.update_yaxes(
-    tickformat=",.0f"
-)
-
-st.plotly_chart(
-    fig2,
+st.area_chart(
+    interest_chart,
     use_container_width=True
 )
 
+
 # =========================================================
-# 14. BẢNG CHI TIẾT
+# 15. BẢNG CHI TIẾT
 # =========================================================
 
 st.subheader("📋 Chi tiết tăng trưởng theo từng tháng")
@@ -392,8 +367,9 @@ st.dataframe(
     hide_index=True
 )
 
+
 # =========================================================
-# 15. NHẬN XÉT
+# 16. NHẬN XÉT
 # =========================================================
 
 st.subheader("💡 Nhận xét")
@@ -404,7 +380,7 @@ if loai_lai == "Lãi kép":
         "Lãi kép cho phép tiền lãi được cộng vào vốn. "
         "Ở các kỳ tiếp theo, tiền lãi được tính trên cả "
         "vốn ban đầu và phần lãi đã tích lũy. "
-        "Do đó, khoản tiền có xu hướng tăng nhanh hơn "
+        "Vì vậy, khoản tiền có xu hướng tăng nhanh hơn "
         "khi thời gian gửi dài."
     )
 
@@ -415,8 +391,9 @@ else:
         "Vì vậy, tiền lãi tăng đều qua các kỳ."
     )
 
+
 # =========================================================
-# 16. CÔNG THỨC
+# 17. CÔNG THỨC
 # =========================================================
 
 with st.expander("📚 Xem công thức tính"):
@@ -435,7 +412,7 @@ with st.expander("📚 Xem công thức tính"):
         st.write("• t: Thời gian gửi tính theo năm")
         st.write("• I: Tổng tiền lãi")
 
-        st.markdown("### Tổng số tiền nhận được")
+        st.markdown("### Tổng số tiền")
 
         st.latex(
             r"A = P + I"
@@ -455,8 +432,9 @@ with st.expander("📚 Xem công thức tính"):
         st.write("• n: Số kỳ nhập lãi")
         st.write("• A: Tổng số tiền cuối kỳ")
 
+
 # =========================================================
-# 17. FOOTER
+# 18. FOOTER
 # =========================================================
 
 st.divider()
