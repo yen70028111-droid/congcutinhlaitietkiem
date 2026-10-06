@@ -48,7 +48,7 @@ except:
 # =========================================================
 
 st.markdown(
-    '<div class="main-title">💰 APP TÍNH LÃI TIỀN GỬI TIẾT KIỆM</div>',
+    '<div class="main-title">💰 APP TÍNH LÃI TIỀN GỬI TIẾT KIỆM- Phạm Thị Vũ Ngọc Yến</div>',
     unsafe_allow_html=True
 )
 
